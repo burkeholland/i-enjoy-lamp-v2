@@ -1,5 +1,6 @@
 const { app } = require("@azure/functions");
 const Pusher = require("pusher");
+const { $ } = require("video.js/dist/types/utils/dom");
 
 app.http("SetColor", {
   methods: ["PUT"],
@@ -14,8 +15,7 @@ app.http("SetColor", {
       headers: {
         accept: "text/plain",
         "content-type": "application/json",
-        Authorization:
-          "Bearer c67b08af258a0949aae37d8b2bd128f362a4d77e3ef0f26ee45e09b5a081d75c",
+        Authorization: `Bearer ${process.env.LIFX_TOKEN}`,
       },
       body: JSON.stringify({
         duration: 1,
@@ -26,9 +26,9 @@ app.http("SetColor", {
     };
 
     const pusher = new Pusher({
-      appId: "1917237",
-      key: "7b77fca77aa1c1163b46",
-      secret: "a3296b14bbe3a6713ad4",
+      appId: process.env.PUSHER_APP_ID,
+      key: process.env.PUSHER_KEY,
+      secret: process.env.PUSHER_SECRET,
       cluster: "us2",
       useTLS: true,
     });
