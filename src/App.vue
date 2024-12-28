@@ -4,9 +4,17 @@ import ActivityFeed from "./components/ActivityFeed.vue";
 import LampControls from "./components/LampControls.vue";
 import VirtualLamp from "./components/VirtualLamp.vue";
 import StreamPlayer from "./components/StreamPlayer.vue";
+import { useAuth } from "./composables/useAuth";
+import LoginModal from "./components/LoginModal.vue";
 
 const { messages, currentColor } = usePusher();
+const { isAuthenticated, isLoading, displayName, signOut } = useAuth();
+const showLoginModal = ref(false);
 import { ref, watch } from "vue";
+
+function handleSignOut() {
+  signOut();
+}
 </script>
 
 <template>
@@ -46,7 +54,13 @@ import { ref, watch } from "vue";
               }"
             >
               <div class="space-y-6 sm:space-y-8">
-                <LampControls :current-color="currentColor" />
+                <LampControls 
+                  :current-color="currentColor" 
+                  :is-authenticated="isAuthenticated"
+                  :display-name="displayName"
+                  @login-required="showLoginModal = true"
+                  @sign-out="handleSignOut"
+                />
                 <div class="border-t border-gray-800/50 pt-6 sm:pt-8">
                   <ActivityFeed />
                 </div>
@@ -56,6 +70,12 @@ import { ref, watch } from "vue";
         </div>
       </div>
     </div>
+    
+    <!-- Login Modal -->
+    <LoginModal 
+      :show="showLoginModal"
+      @close="showLoginModal = false"
+    />
   </div>
 </template>
 

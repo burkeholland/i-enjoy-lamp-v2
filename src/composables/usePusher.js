@@ -1,10 +1,12 @@
 import { ref, onMounted } from "vue";
 import Pusher from "pusher-js";
+import { useUserStore } from "../stores/userStore";
 
 export function usePusher() {
   const messages = ref([]);
   const currentColor = ref("#FFFFFF");
   const lastUpdate = ref(null);
+  const userStore = useUserStore();
 
   onMounted(() => {
     // Enable pusher logging - don't include this in production
@@ -16,10 +18,17 @@ export function usePusher() {
 
     const channel = pusher.subscribe("i-enjoy-lamp");
     channel.bind("lamp-update", (data) => {
-      messages.value.push(data);
+      const activity = {
+        ...data,
+        userName: userStore.userDisplayName || "Anonymous",
+        timestamp: Date.now(),
+      };
+
+      messages.value = [...messages.value, activity].slice(-10);
+
       if (data.color) {
         currentColor.value = data.color;
-        lastUpdate.value = new Date();
+        lastUpdate.value = activity.timestamp;
       }
     });
   });
@@ -27,6 +36,6 @@ export function usePusher() {
   return {
     messages,
     currentColor,
-    lastUpdate
+    lastUpdate,
   };
 }
