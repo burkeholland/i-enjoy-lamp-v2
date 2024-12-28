@@ -6,6 +6,7 @@ import VirtualLamp from "./components/VirtualLamp.vue";
 import StreamPlayer from "./components/StreamPlayer.vue";
 import { useAuth } from "./composables/useAuth";
 import LoginModal from "./components/LoginModal.vue";
+import ActivityOverlay from './components/ActivityOverlay.vue';
 
 const { messages, currentColor } = usePusher();
 const { isAuthenticated, isLoading, displayName, signOut } = useAuth();
@@ -29,7 +30,7 @@ function handleSignOut() {
         <div class="grid lg:grid-cols-5 gap-3 sm:gap-6 lg:gap-8">
           <!-- Livestream Area -->
           <div
-            class="lg:col-span-3 aspect-video bg-gray-900/40 rounded-2xl sm:rounded-3xl backdrop-blur-xl overflow-hidden transition-all duration-700 border shadow-2xl"
+            class="lg:col-span-3 aspect-video bg-gray-900/40 rounded-2xl sm:rounded-3xl backdrop-blur-xl overflow-hidden transition-all duration-700 border shadow-2xl relative"
             :style="{
               borderColor: `color-mix(in srgb, ${currentColor} 15%, rgb(30 41 59))`,
             }"
@@ -42,6 +43,7 @@ function handleSignOut() {
                 </div>
               </template>
             </Suspense>
+            <ActivityOverlay />
           </div>
 
           <!-- Control Panel -->

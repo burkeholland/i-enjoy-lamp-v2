@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from "vue";
-import VirtualLamp from "./VirtualLamp.vue";
 
 const props = defineProps({
   currentColor: {
@@ -74,45 +73,43 @@ async function handleSetClick() {
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-3 sm:gap-6">
-      <!-- Color Picker -->
-      <div
-        class="control-panel p-4 sm:p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-700/30 transition-all duration-700"
-        :class="{ 'opacity-50': isUpdating }"
-      >
-        <label class="block text-gray-400 mb-3 sm:mb-4 text-sm font-medium">
+    <!-- Color Picker (full width) -->
+    <div class="bg-gray-800/30 backdrop-blur-xl rounded-2xl overflow-hidden">
+      <div class="p-4 border-b border-gray-700/30 flex items-center justify-between">
+        <label class="text-sm font-medium text-gray-300">
           {{ isAuthenticated ? "Choose Color" : "Sign in to Change Color" }}
         </label>
-        <input
-          type="color"
-          class="w-full h-24 sm:h-32 rounded-lg sm:rounded-xl cursor-pointer transition-transform duration-300 hover:scale-[1.02] touch-manipulation"
-          v-model="pendingColor"
-          :disabled="isUpdating"
-          @input="handleColorInput"
-        />
-        <div
-          class="mt-2 sm:mt-3 flex justify-between text-gray-400 text-xs sm:text-sm font-mono"
-        >
-          <span>Pending</span>
-          <span>{{ pendingColor }}</span>
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-3 h-3 rounded-full transition-all duration-300"
+                :style="{ backgroundColor: pendingColor }">
+          </span>
+          <code class="text-xs text-gray-500 font-mono">{{ pendingColor }}</code>
         </div>
       </div>
 
-      <!-- Current Lamp -->
-      <div
-        class="control-panel p-4 sm:p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-700/30 transition-all duration-700"
-      >
-        <label class="block text-gray-400 mb-4 text-sm font-medium"
-          >Current Color</label
-        >
-        <div class="h-32 flex items-center justify-center">
-          <div class="w-32">
-            <VirtualLamp :color="currentColor" size="normal" />
+      <div class="p-6 relative">
+        <div class="absolute inset-0 opacity-10 transition-all duration-500"
+             :style="{ backgroundColor: pendingColor }">
+        </div>
+        
+        <div class="relative">
+          <input
+            type="color"
+            v-model="pendingColor"
+            :disabled="isUpdating"
+            @input="handleColorInput"
+            class="w-full h-12 rounded-lg cursor-pointer border-0 bg-transparent
+                   hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+          />
+          <div class="absolute inset-0 pointer-events-none rounded-lg 
+                      ring-1 ring-white/10 hover:ring-white/20 transition-all duration-300">
           </div>
         </div>
-        <div class="mt-3 flex justify-between text-gray-400 text-sm font-mono">
-          <span>Active</span>
-          <span>{{ currentColor }}</span>
+
+        <div class="h-1 w-full mt-4 rounded-full overflow-hidden bg-gray-800/50">
+          <div class="h-full w-full transition-all duration-300"
+               :style="{ background: `linear-gradient(to right, transparent, ${pendingColor})` }">
+          </div>
         </div>
       </div>
     </div>
@@ -121,6 +118,12 @@ async function handleSetClick() {
       @click="handleSetClick"
       :disabled="isUpdating"
       class="w-full group relative overflow-hidden border border-gray-700/30 text-white px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all duration-700"
+      :style="{
+        borderColor: `color-mix(in srgb, ${currentColor} 30%, rgb(75 85 99 / 0.3))`,
+        background: isAuthenticated ? 
+          `linear-gradient(45deg, rgba(31, 41, 55, 0.5), color-mix(in srgb, ${currentColor} 10%, rgba(31, 41, 55, 0.5)))` :
+          undefined
+      }"
     >
       <span class="relative z-10 font-medium">
         {{
@@ -155,6 +158,4 @@ async function handleSetClick() {
 @media (hover: hover) {
   .control-panel:hover {
     transform: translateY(-2px);
-  }
-}
-</style>
+  }}input[type="color"]::-webkit-color-swatch-wrapper {  padding: 0;}input[type="color"]::-webkit-color-swatch {  border: none;  border-radius: 0.5rem;}</style>
