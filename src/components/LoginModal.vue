@@ -18,6 +18,13 @@ defineProps({
 
       <div class="space-y-3">
         <a
+          href="/.auth/login/google"
+          class="flex items-center justify-center gap-3 w-full px-4 py-3 border border-gray-700 rounded-xl bg-gray-800/50 text-white hover:bg-gray-800/70 transition"
+        >
+          <font-awesome-icon :icon="['fab', 'google']" class="w-5 h-5" />
+          <span>Sign in with Google</span>
+        </a>
+        <a
           href="/.auth/login/github"
           class="flex items-center justify-center gap-3 w-full px-4 py-3 border border-gray-700 rounded-xl bg-gray-800/50 text-white hover:bg-gray-800/70 transition"
         >
