@@ -1,6 +1,5 @@
 const { app } = require("@azure/functions");
 const Pusher = require("pusher");
-const { $ } = require("video.js/dist/types/utils/dom");
 
 app.http("SetColor", {
   methods: ["PUT"],
