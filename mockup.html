@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Enjoy Lamp - Remote Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 min-h-screen">
+    <!-- Login Modal -->
+    <!-- <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-6 text-center">Welcome to I Enjoy Lamp</h2>
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-gray-700">Username</label>
+                    <input type="text" class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                    <label class="block text-gray-700">Password</label>
+                    <input type="password" class="w-full border rounded-lg p-2">
+                </div>
+                <button class="w-full bg-yellow-500 text-white rounded-lg py-2 hover:bg-yellow-600">
+                    Login
+                </button>
+            </form>
+        </div>
+    </div> -->
+
+    <!-- Main Lamp Control -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Virtual Lamp -->
+            <div class="relative mb-8">
+                <div class="w-40 h-40 mx-auto bg-yellow-300 rounded-full shadow-lg glow"></div>
+                <div class="w-8 h-24 mx-auto bg-gray-700 mt-2"></div>
+                <div class="w-20 h-4 mx-auto bg-gray-800 rounded-lg"></div>
+            </div>
+
+            <!-- Lamp Controls -->
+            <div class="bg-gray-800 rounded-xl p-8 shadow-xl">
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-white">Lamp Control</h2>
+                        <span class="px-3 py-1 rounded-full bg-green-500 text-white text-sm">Connected</span>
+                    </div>
+                    
+                    <div class="color-picker-wrapper">
+                        <input type="color" class="w-full h-16 rounded-lg" id="colorPicker">
+                        <div class="mt-2 flex justify-between text-gray-400 text-sm">
+                            <span>Color Temperature</span>
+                            <span id="colorValue">#FFFFFF</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button class="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600">
+                            Toggle Lamp
+                        </button>
+                        <div class="text-gray-400 text-sm">
+                            Brightness
+                            <input type="range" class="ml-2" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Feed -->
+                <div class="mt-8 border-t border-gray-700 pt-4">
+                    <h3 class="text-white mb-3">Recent Activity</h3>
+                    <div class="space-y-2 max-h-32 overflow-y-auto">
+                        <div class="text-sm text-gray-400 flex items-center">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                            <span>Alice changed color to blue • 2m ago</span>
+                        </div>
+                        <div class="text-sm text-gray-400 flex items-center">
+                            <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                            <span>Bob changed color to red • 5m ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .glow {
+            box-shadow: 0 0 50px rgba(252, 211, 77, 0.5);
+        }
+    </style>
+</body>
+</html>
