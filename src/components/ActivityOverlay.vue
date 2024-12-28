@@ -67,7 +67,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-
 .activity-enter-active,
 .activity-leave-active {
   transition: all 0.5s ease;
