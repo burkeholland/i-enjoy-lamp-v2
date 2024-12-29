@@ -36,7 +36,7 @@ async function handleSetClick() {
 const gradients = computed(() => ({
   preview: `linear-gradient(45deg, ${pendingColor.value}22, ${pendingColor.value}44)`,
   hover: `linear-gradient(to right, ${pendingColor.value}11, ${pendingColor.value}33)`,
-  button: `linear-gradient(165deg, transparent, ${pendingColor.value}22)`
+  button: `linear-gradient(165deg, transparent, ${pendingColor.value}22)`,
 }));
 </script>
 
@@ -45,48 +45,40 @@ const gradients = computed(() => ({
     <!-- Color Selection -->
     <div class="space-y-2">
       <div class="text-xs font-medium text-white/70">Color Selection</div>
-      
+
       <!-- Color Input -->
       <div class="group/picker relative">
         <!-- Background Glow -->
-        <div class="absolute -inset-1 opacity-20 blur-md transition-colors duration-500"
-             :style="{ backgroundColor: pendingColor }">
-        </div>
-        
+        <div
+          class="absolute -inset-1 opacity-20 blur-md transition-colors duration-500"
+          :style="{ backgroundColor: pendingColor }"
+        ></div>
+
         <!-- Main Input Area -->
         <div class="relative">
-          <input type="color"
-                 ref="colorInput"
-                 v-model="pendingColor"
-                 :disabled="isUpdating"
-                 @input="handleColorInput"
-                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          <input
+            type="color"
+            ref="colorInput"
+            v-model="pendingColor"
+            :disabled="isUpdating"
+            @input="handleColorInput"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
-          
-          <!-- Custom Color Preview -->
-          <div class="h-16 rounded-lg overflow-hidden"
-               :style="{ backgroundColor: pendingColor }">
-            <!-- Interactive Elements -->
-            <div class="h-full w-full grid place-items-center opacity-0 
-                        group-hover/picker:opacity-100 transition-all duration-300
-                        bg-gradient-to-b from-black/0 via-black/20 to-black/40">
-              <div class="rounded bg-white/10 backdrop-blur-sm px-2 py-0.5 text-[10px]">
-                Choose Color
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Current Selection -->
         <div class="mt-1.5 flex items-center justify-between text-[10px]">
           <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full ring-1 ring-white/20"
-                 :style="{ backgroundColor: pendingColor }">
-            </div>
+            <div
+              class="w-3 h-3 rounded-full ring-1 ring-white/20"
+              :style="{ backgroundColor: pendingColor }"
+            ></div>
             <code class="font-mono text-white/50">{{ pendingColor }}</code>
           </div>
-          <div v-if="pendingColor !== currentColor" 
-               class="text-xs text-white/40">
+          <div
+            v-if="pendingColor !== currentColor"
+            class="text-xs text-white/40"
+          >
             Press update to apply
           </div>
         </div>
@@ -94,29 +86,33 @@ const gradients = computed(() => ({
     </div>
 
     <!-- Update Button -->
-    <button @click="handleSetClick"
-            :disabled="isUpdating || currentColor === pendingColor"
-            class="w-full group/btn relative py-2">
+    <button
+      @click="handleSetClick"
+      :disabled="isUpdating || currentColor === pendingColor"
+      class="w-full group/btn relative py-2"
+    >
       <!-- Button Background -->
-      <div class="absolute inset-0 rounded-xl transition-all duration-300 opacity-80"
-           :style="{ backgroundColor: pendingColor }">
-      </div>
-      
+      <div
+        class="absolute inset-0 rounded-xl transition-all duration-300 opacity-80"
+        :style="{ backgroundColor: pendingColor }"
+      ></div>
+
       <!-- Glass Effect -->
-      <div class="absolute inset-0 rounded-xl bg-black/40 
-                  group-hover/btn:bg-black/30 transition-all duration-300">
-      </div>
+      <div
+        class="absolute inset-0 rounded-xl bg-black/40 group-hover/btn:bg-black/30 transition-all duration-300"
+      ></div>
 
       <!-- Button Content -->
       <div class="relative px-3 py-1.5 text-xs font-medium">
-        {{ isUpdating ? 'Updating...' : 'Update Color' }}
+        {{ isUpdating ? "Updating..." : "Update Color" }}
       </div>
     </button>
 
     <!-- Error Display -->
-    <div v-if="error" 
-         class="px-4 py-3 rounded-lg text-sm text-red-400/90 
-                bg-red-500/10 border border-red-500/10">
+    <div
+      v-if="error"
+      class="px-4 py-3 rounded-lg text-sm text-red-400/90 bg-red-500/10 border border-red-500/10"
+    >
       {{ error }}
     </div>
   </div>
