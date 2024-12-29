@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
         v-for="activity in visibleActivities"
         :key="activity.id"
         class="text-sm text-white flex items-center transition-all duration-300
-               bg-black/30 backdrop-blur-sm rounded-lg px-3 py-2 max-w-md"
+               bg-black/30 backdrop-blur-sm rounded-lg px-3 py-2 max-w-md pointer-events-none"
       >
         <div
           class="w-2 h-2 rounded-full mr-2 shrink-0"
