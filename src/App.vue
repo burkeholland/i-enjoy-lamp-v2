@@ -39,11 +39,8 @@ function handleLoginClick() {
     <div class="flex-1 grid lg:grid-cols-[1fr,400px] overflow-hidden">
       <!-- Stream Section -->
       <div class="relative min-h-[40vh] lg:min-h-0">
-        <!-- Stream Background Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
-        
-        <!-- Stream Content -->
-        <div class="absolute inset-0">
+        <!-- Stream Content - Move up in z-index -->
+        <div class="absolute inset-0 z-20">
           <Suspense>
             <StreamPlayer />
             <template #fallback>
@@ -54,8 +51,11 @@ function handleLoginClick() {
           </Suspense>
         </div>
 
-        <!-- Color Indicator -->
-        <div class="absolute top-4 right-4 z-20 flex items-center gap-2 px-3 py-1.5 
+        <!-- Background Overlay - Move to back -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
+        
+        <!-- Color Indicator - Move to front -->
+        <div class="absolute top-4 right-4 z-30 flex items-center gap-2 px-3 py-1.5 
                     rounded-full bg-black/30 backdrop-blur-sm text-xs">
           <div class="w-2 h-2 rounded-full animate-pulse"
                :style="{ backgroundColor: currentColor }">
@@ -63,7 +63,8 @@ function handleLoginClick() {
           <code class="font-mono text-white/70">{{ currentColor }}</code>
         </div>
         
-        <ActivityOverlay />
+        <!-- Activity Overlay - Move to front -->
+        <ActivityOverlay class="z-30" />
       </div>
 
       <!-- Control Panel -->
