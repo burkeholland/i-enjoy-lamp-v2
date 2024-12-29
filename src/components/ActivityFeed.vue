@@ -25,9 +25,9 @@ function formatTime(timestamp) {
 </script>
 
 <template>
-  <div>
-    <h3 class="text-white mb-3">Recent Activity</h3>
-    <div class="space-y-2 max-h-48 overflow-y-auto activity-feed">
+  <div class="p-3">
+    <h3 class="text-xs font-medium text-white/70 mb-2">Recent Activity</h3>
+    <div class="space-y-1.5 max-h-32 overflow-y-auto activity-feed pr-2">
       <TransitionGroup name="activity">
         <div
           v-for="activity in activities"

@@ -23,94 +23,94 @@ function handleLoginClick() {
 </script>
 
 <template>
-  <!-- Main container with subtle background tint -->
-  <div class="min-h-screen bg-gray-900 transition-all duration-700"
-       :style="{
-         backgroundColor: `color-mix(in srgb, ${currentColor} 1%, rgb(17 24 39))`
-       }">
-    <!-- Color progress bar -->
-    <div class="fixed top-0 left-0 right-0 h-0.5 transition-all duration-500"
-         :style="{ backgroundColor: currentColor }">
+  <div class="h-screen flex flex-col bg-black text-white/90">
+    <!-- Top Bar -->
+    <div class="h-12 flex items-center justify-between px-4 sm:px-6 border-b border-white/5">
+      <div class="text-sm font-medium">I Enjoy Lamp</div>
+      <button @click="isAuthenticated ? signOut() : showLoginModal = true"
+              class="px-3 py-1 text-xs text-white/70 hover:text-white/90
+                     rounded-full border border-white/10 hover:border-white/20 
+                     transition-all duration-300">
+        {{ isAuthenticated ? displayName : 'Sign in' }}
+      </button>
     </div>
 
-    <div class="min-h-screen overflow-auto p-3 sm:p-4 lg:p-8">
-      <div class="max-w-6xl mx-auto">
-
-
-        <div class="grid lg:grid-cols-5 gap-3 sm:gap-6 lg:gap-8">
-          <!-- Livestream Area with color reflections -->
-          <div class="lg:col-span-3 aspect-video relative">
-            <!-- Color reflection container -->
-            <div class="absolute inset-0 rounded-2xl opacity-10 transition-all duration-500 blur-2xl"
-                 :style="{ backgroundColor: currentColor }">
-            </div>
-            <!-- Main content container -->
-            <div class="relative h-full rounded-2xl bg-gray-900/40 backdrop-blur-xl 
-                        overflow-hidden border shadow-2xl"
-                 :style="{
-                   borderColor: `color-mix(in srgb, ${currentColor} 15%, rgb(30 41 59))`,
-                   boxShadow: `0 0 50px ${currentColor}05`
-                 }">
-              <!-- Color indicator pill -->
-              <div class="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 
-                          rounded-full bg-black/30 backdrop-blur-sm text-white/70 text-xs">
-                <div class="w-2 h-2 rounded-full transition-colors duration-500"
-                     :style="{ backgroundColor: currentColor }">
-                </div>
-                <span class="font-mono">{{ currentColor }}</span>
+    <!-- Main Content -->
+    <div class="flex-1 grid lg:grid-cols-[1fr,400px] overflow-hidden">
+      <!-- Stream Section -->
+      <div class="relative min-h-[40vh] lg:min-h-0">
+        <!-- Stream Background Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
+        
+        <!-- Stream Content -->
+        <div class="absolute inset-0">
+          <Suspense>
+            <StreamPlayer />
+            <template #fallback>
+              <div class="grid place-items-center h-full">
+                <div class="loading-pulse">Loading stream...</div>
               </div>
-              
-              <Suspense>
-                <StreamPlayer />
-                <template #fallback>
-                  <div class="h-full flex items-center justify-center text-gray-500/80">
-                    Loading stream...
-                  </div>
-                </template>
-              </Suspense>
-              <ActivityOverlay />
-            </div>
-          </div>
+            </template>
+          </Suspense>
+        </div>
 
-          <!-- Control Panel with color accents -->
-          <div class="lg:col-span-2">
-            <div class="bg-gray-900/40 backdrop-blur-xl rounded-2xl p-4 sm:p-6 
-                        transition-all duration-700 border shadow-2xl"
-                 :style="{
-                   borderColor: `color-mix(in srgb, ${currentColor} 15%, rgb(30 41 59))`,
-                   background: `linear-gradient(180deg, 
-                     rgba(17, 24, 39, 0.4) 0%, 
-                     color-mix(in srgb, ${currentColor} 3%, rgba(17, 24, 39, 0.4)) 100%)`,
-                   boxShadow: `0 25px 50px -12px ${currentColor}05`
-                 }">
-              <div class="space-y-6 sm:space-y-8">
-                <LampControls 
-                  :current-color="currentColor" 
-                  :is-authenticated="isAuthenticated"
-                  :display-name="displayName"
-                  @login-required="handleLoginClick"
-                  @sign-out="signOut"
-                />
-                <div class="border-t border-gray-800/50 pt-6 sm:pt-8">
-                  <ActivityFeed />
-                </div>
-              </div>
-            </div>
+        <!-- Color Indicator -->
+        <div class="absolute top-4 right-4 z-20 flex items-center gap-2 px-3 py-1.5 
+                    rounded-full bg-black/30 backdrop-blur-sm text-xs">
+          <div class="w-2 h-2 rounded-full animate-pulse"
+               :style="{ backgroundColor: currentColor }">
           </div>
+          <code class="font-mono text-white/70">{{ currentColor }}</code>
+        </div>
+        
+        <ActivityOverlay />
+      </div>
+
+      <!-- Control Panel -->
+      <div class="flex flex-col bg-black/50 backdrop-blur-md">
+        <!-- Controls -->
+        <div class="flex-1 overflow-auto">
+          <div class="p-6">
+            <LampControls 
+              :current-color="currentColor" 
+              :is-authenticated="isAuthenticated"
+              @login-required="showLoginModal = true"
+            />
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="border-t border-white/5">
+          <ActivityFeed />
         </div>
       </div>
     </div>
-    
+
     <!-- Login Modal -->
-    <LoginModal 
-      :show="showLoginModal"
-      @close="showLoginModal = false"
-    />
+    <LoginModal :show="showLoginModal" @close="showLoginModal = false" />
   </div>
 </template>
 
-<style scoped>
-video::-webkit-media-controls {
-  display: none !important;
+<style>
+::-webkit-scrollbar {
+  @apply w-0.5;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-white/5;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 hover:bg-white/20 transition-colors;
+}
+
+.loading-pulse {
+  @apply text-white/50;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.2; }
 }
 </style>

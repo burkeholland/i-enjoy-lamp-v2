@@ -1,128 +1,170 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { usePusher } from "../composables/usePusher";
 
-const props = defineProps({
-  currentColor: String,
-  displayName: String,
-  isAuthenticated: Boolean
-});
-
-const emit = defineEmits(["sign-out"]);
-const error = ref(null);
+const { currentColor } = usePusher();
+const pendingColor = ref(currentColor.value);
 const isUpdating = ref(false);
-const pendingColor = ref("#FFFFFF");
+const error = ref(null);
+
+// Add ref for color input
+const colorInput = ref(null);
+
+function handleColorInput(event) {
+  pendingColor.value = event.target.value;
+}
 
 async function handleSetClick() {
+  isUpdating.value = true;
+  error.value = null;
   try {
-    isUpdating.value = true;
-    const response = await fetch("/api/set", {
+    await fetch("/api/set", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        color: pendingColor.value,
-        userName: props.isAuthenticated ? props.displayName : 'Anonymous'
-      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ color: pendingColor.value }),
     });
-
-    if (!response.ok) throw new Error("Failed to update lamp");
   } catch (err) {
-    error.value = err.message;
+    error.value = "Failed to update color. Please try again.";
   } finally {
     isUpdating.value = false;
   }
 }
+
+// Computed gradients for visual effects
+const gradients = computed(() => ({
+  preview: `linear-gradient(45deg, ${pendingColor.value}22, ${pendingColor.value}44)`,
+  hover: `linear-gradient(to right, ${pendingColor.value}11, ${pendingColor.value}33)`,
+  button: `linear-gradient(165deg, transparent, ${pendingColor.value}22)`
+}));
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center">
-      <h2 class="text-xl sm:text-2xl font-bold text-white">
-        Lamp Control
-      </h2>
-      <div v-if="isAuthenticated" class="text-sm text-gray-400">
-        {{ displayName }}
-        <button @click="$emit('sign-out')" 
-                class="ml-3 text-gray-500 hover:text-white transition-colors">
-          Sign out
-        </button>
-      </div>
-      <div v-else>
-        <button @click="$emit('login-required')" 
-                class="text-sm text-gray-500 hover:text-white transition-colors">
-          Sign in
-        </button>
+  <div class="space-y-4">
+    <!-- Color Selection -->
+    <div class="space-y-2">
+      <div class="text-xs font-medium text-white/70">Color Selection</div>
+      
+      <!-- Color Input -->
+      <div class="group/picker relative">
+        <!-- Background Glow -->
+        <div class="absolute -inset-1 opacity-20 blur-md transition-colors duration-500"
+             :style="{ backgroundColor: pendingColor }">
+        </div>
+        
+        <!-- Main Input Area -->
+        <div class="relative">
+          <input type="color"
+                 ref="colorInput"
+                 v-model="pendingColor"
+                 :disabled="isUpdating"
+                 @input="handleColorInput"
+                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          
+          <!-- Custom Color Preview -->
+          <div class="h-16 rounded-lg overflow-hidden"
+               :style="{ backgroundColor: pendingColor }">
+            <!-- Interactive Elements -->
+            <div class="h-full w-full grid place-items-center opacity-0 
+                        group-hover/picker:opacity-100 transition-all duration-300
+                        bg-gradient-to-b from-black/0 via-black/20 to-black/40">
+              <div class="rounded bg-white/10 backdrop-blur-sm px-2 py-0.5 text-[10px]">
+                Choose Color
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Selection -->
+        <div class="mt-1.5 flex items-center justify-between text-[10px]">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full ring-1 ring-white/20"
+                 :style="{ backgroundColor: pendingColor }">
+            </div>
+            <code class="font-mono text-white/50">{{ pendingColor }}</code>
+          </div>
+          <div v-if="pendingColor !== currentColor" 
+               class="text-xs text-white/40">
+            Press update to apply
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Color Controls -->
-    <div class="control-panel p-4 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/30">
-      <label class="block text-gray-400 mb-4 text-sm font-medium">Choose Color</label>
-      <input
-        type="color"
-        v-model="pendingColor"
-        :disabled="isUpdating"
-        class="w-full h-16 rounded-lg cursor-pointer"
-      />
-      <!-- ...existing color display... -->
-    </div>
+    <!-- Update Button -->
+    <button @click="handleSetClick"
+            :disabled="isUpdating || currentColor === pendingColor"
+            class="w-full group/btn relative py-2">
+      <!-- Button Background -->
+      <div class="absolute inset-0 rounded-xl transition-all duration-300 opacity-80"
+           :style="{ backgroundColor: pendingColor }">
+      </div>
+      
+      <!-- Glass Effect -->
+      <div class="absolute inset-0 rounded-xl bg-black/40 
+                  group-hover/btn:bg-black/30 transition-all duration-300">
+      </div>
 
-    <button
-      @click="handleSetClick"
-      :disabled="isUpdating"
-      class="w-full bg-gray-800/50 border border-gray-700/30 text-white px-6 py-3 
-             rounded-xl transition-all duration-300"
-    >
-      {{ isUpdating ? "Updating..." : "Update Lamp" }}
+      <!-- Button Content -->
+      <div class="relative px-3 py-1.5 text-xs font-medium">
+        {{ isUpdating ? 'Updating...' : 'Update Color' }}
+      </div>
     </button>
 
-    <!-- ...existing error handling... -->
+    <!-- Error Display -->
+    <div v-if="error" 
+         class="px-4 py-3 rounded-lg text-sm text-red-400/90 
+                bg-red-500/10 border border-red-500/10">
+      {{ error }}
+    </div>
   </div>
 </template>
 
 <style scoped>
-    .control-panel {
-        transition: all 0.3s ease;
-    }
+.control-panel {
+  transition: all 0.3s ease;
+}
 
-    .control-panel:active {
-        transform: scale(0.98);
-    }
+.control-panel:active {
+  transform: scale(0.98);
+}
 
-    @media (hover: hover) {
-        .control-panel:hover {
-            transform: translateY(-2px);
-        }
-    }
+@media (hover: hover) {
+  .control-panel:hover {
+    transform: translateY(-2px);
+  }
+}
 
-    input[type="color"]::-webkit-color-swatch-wrapper {
-        padding: 0;
-    }
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
 
-    input[type="color"]::-webkit-color-swatch {
-        border: none;
-        border-radius: 0.75rem;
-    }
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 0.75rem;
+}
 
-    input[type="range"] {
-        background: transparent;
-    }
+input[type="range"] {
+  background: transparent;
+}
 
-    input[type="range"]::-webkit-slider-thumb {
-        transform: scale(1);
-        transition: transform 0.2s;
-    }
+input[type="range"]::-webkit-slider-thumb {
+  transform: scale(1);
+  transition: transform 0.2s;
+}
 
-    input[type="range"]::-webkit-slider-thumb:hover {
-        transform: scale(1.5);
-    }
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.5);
+}
 
-    input[type="color"]::-webkit-color-swatch-wrapper {
-        padding: 0;
-    }
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
 
-    input[type="color"]::-webkit-color-swatch {
-        border: none;
-        border-radius: 0.5rem;
-    }
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 0.5rem;
+}
 </style>
