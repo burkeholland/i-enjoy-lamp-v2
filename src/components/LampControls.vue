@@ -7,9 +7,6 @@ const pendingColor = ref(currentColor.value);
 const isUpdating = ref(false);
 const error = ref(null);
 
-// Add ref for color input
-const colorInput = ref(null);
-
 function handleColorInput(event) {
   pendingColor.value = event.target.value;
 }
@@ -31,13 +28,6 @@ async function handleSetClick() {
     isUpdating.value = false;
   }
 }
-
-// Computed gradients for visual effects
-const gradients = computed(() => ({
-  preview: `linear-gradient(45deg, ${pendingColor.value}22, ${pendingColor.value}44)`,
-  hover: `linear-gradient(to right, ${pendingColor.value}11, ${pendingColor.value}33)`,
-  button: `linear-gradient(165deg, transparent, ${pendingColor.value}22)`,
-}));
 </script>
 
 <template>
@@ -47,40 +37,30 @@ const gradients = computed(() => ({
       <div class="text-xs font-medium text-white/70">Color Selection</div>
 
       <!-- Color Input -->
-      <div class="group/picker relative">
-        <!-- Background Glow -->
-        <div
-          class="absolute -inset-1 opacity-20 blur-md transition-colors duration-500"
-          :style="{ backgroundColor: pendingColor }"
-        ></div>
+      <div class="relative">
+        <input
+          type="color"
+          v-model="pendingColor"
+          :disabled="isUpdating"
+          @input="handleColorInput"
+          class="w-full h-16 rounded-lg cursor-pointer"
+        />
+      </div>
 
-        <!-- Main Input Area -->
-        <div class="relative">
-          <input
-            type="color"
-            ref="colorInput"
-            v-model="pendingColor"
-            :disabled="isUpdating"
-            @input="handleColorInput"
-            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
-        </div>
-
-        <!-- Current Selection -->
-        <div class="mt-1.5 flex items-center justify-between text-[10px]">
-          <div class="flex items-center gap-2">
-            <div
-              class="w-3 h-3 rounded-full ring-1 ring-white/20"
-              :style="{ backgroundColor: pendingColor }"
-            ></div>
-            <code class="font-mono text-white/50">{{ pendingColor }}</code>
-          </div>
+      <!-- Current Selection -->
+      <div class="mt-1.5 flex items-center justify-between text-[10px]">
+        <div class="flex items-center gap-2">
           <div
-            v-if="pendingColor !== currentColor"
-            class="text-xs text-white/40"
-          >
-            Press update to apply
-          </div>
+            class="w-3 h-3 rounded-full ring-1 ring-white/20"
+            :style="{ backgroundColor: pendingColor }"
+          ></div>
+          <code class="font-mono text-white/50">{{ pendingColor }}</code>
+        </div>
+        <div
+          v-if="pendingColor !== currentColor"
+          class="text-xs text-white/40"
+        >
+          Press update to apply
         </div>
       </div>
     </div>
