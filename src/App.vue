@@ -16,6 +16,10 @@ import { ref, watch } from "vue";
 function handleSignOut() {
   signOut();
 }
+
+function handleLoginClick() {
+  showLoginModal.value = true;
+}
 </script>
 
 <template>
@@ -84,8 +88,8 @@ function handleSignOut() {
                   :current-color="currentColor" 
                   :is-authenticated="isAuthenticated"
                   :display-name="displayName"
-                  @login-required="showLoginModal = true"
-                  @sign-out="handleSignOut"
+                  @login-required="handleLoginClick"
+                  @sign-out="signOut"
                 />
                 <div class="border-t border-gray-800/50 pt-6 sm:pt-8">
                   <ActivityFeed />
