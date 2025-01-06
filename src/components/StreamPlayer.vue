@@ -16,7 +16,7 @@ onMounted(() => {
     player = new YT.Player(playerContainer.value, {
       width: '100%',
       height: '100%',
-      videoId: 'Bi4UcrnVeM4', // Updated with your stream ID
+      videoId: '8LaOBbK1loI', // Updated with your stream ID
       playerVars: {
         autoplay: 1,
         controls: 1,
